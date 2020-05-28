@@ -5,40 +5,67 @@ const generateId = require('../../utils/generateId.util');
 /**
  * Mock database, replace this with your db models import, required to perform query to your database.
  */
-const db = {
-  users: [
-    {
-      id: 'bff28903-042e-47c2-b9ee-07c3954989ec',
-      name: 'Marco',
-      created_at: 1558536830937,
-    },
-    {
-      id: 'dca01a32-36e6-4886-af75-8e7caa0162a9',
-      name: 'Leonardo',
-      created_at: 1558536843742,
-    },
-    {
-      id: 'dca01a32-36e6-4886-af75-8e7caa0162a9',
-      name: 'Berta',
-      created_at: 1558536863550,
-    },
-  ],
-};
+const db = require('../../lib/db')('users');
 
-exports.getOne = ctx => {
-  const { userId } = ctx.params;
-  const user = db.users.find(user => user.id === userId);
-  ctx.assert(user, 404, "The requested user doesn't exist");
+exports.get = ctx => {
+  const userId = this.checkQuery('id')
+    .isInt()
+    .toInt();
+
+  if (this.errors) {
+    this.body = this.errors;
+    return;
+  }
+
+  const user = db.where({ id: userId }).first();
+  ctx.assert(user, 404, 'The requested user does not exist');
   ctx.status = 200;
   ctx.body = user;
 };
 
-exports.getAll = async ctx => {
+exports.index = async ctx => {
+  const page = this.checkQuery('page')
+    .optional()
+    .toInt();
+  var size = this.checkQuery('size')
+    .optional()
+    .toInt();
+
+  if (page && !size) {
+    size = 25;
+  }
+
+  var users;
+  if (page) {
+    var body = {};
+    const offset = (page - 1) * size;
+    return Promise.all([
+      db.count('* as count').first(),
+      db
+        .select('*')
+        .offset(offset)
+        .limit(size),
+    ]).then(([total, rows]) => {
+      var count = total.count;
+      body.total = count;
+      body.per_page = size;
+      body.offset = offset;
+      body.to = offset + rows.length;
+      body.last_page = Math.ceil(count / size);
+      body.current_page = page;
+      body.from = offset;
+      body.data = rows;
+      users = body;
+    });
+  } else {
+    users = db.select();
+  }
+
   ctx.status = 200;
-  ctx.body = db.users;
+  ctx.body = users;
 };
 
-exports.createOne = async ctx => {
+exports.update = async ctx => {
   const { name } = ctx.request.body;
   ctx.assert(name, 400, 'The user info is malformed!');
   const id = generateId();

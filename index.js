@@ -2,6 +2,7 @@
 
 const http = require('http');
 const server = require('./server');
+const db = require('./lib/db');
 
 const { port } = require('./config').server;
 
@@ -11,6 +12,19 @@ async function bootstrap() {
    * e.g.
    * await sequelize.authenticate()
    */
+
+  try {
+    await db.select(db.raw('1'));
+  } catch (err) {
+    process.exitCode = 1;
+  } finally {
+    if (server) {
+      await server.stop();
+    }
+    await db.destroy();
+
+    setTimeout(() => process.exit(), 10000).unref();
+  }
   return http.createServer(server.callback()).listen(port);
 }
 
