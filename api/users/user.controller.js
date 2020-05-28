@@ -66,6 +66,7 @@ exports.index = async ctx => {
 };
 
 exports.update = async ctx => {
+  const first_name = this.checkBody('first_name').optional();
   const { name } = ctx.request.body;
   ctx.assert(name, 400, 'The user info is malformed!');
   const id = generateId();
