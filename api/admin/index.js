@@ -2,14 +2,12 @@
 
 const fs = require('fs');
 const path = require('path');
-const Router = require('@koa/router');
-
-const { apiVersion } = require('../config').server;
+const auth_util = require('../../util/auth.util');
 const baseName = path.basename(__filename);
 
-function applyApiMiddleware(app) {
+module.exports = Router => {
   const router = new Router({
-    prefix: `/api/${apiVersion}`,
+    prefix: `/admin`,
   });
 
   // Require all the folders and create a sub-router for each feature api
@@ -17,10 +15,8 @@ function applyApiMiddleware(app) {
     .filter(file => file.indexOf('.') !== 0 && file !== baseName)
     .forEach(file => {
       const api = require(path.join(__dirname, file))(Router);
-      router.use(api.routes());
+      router.use(api.routes(), /* Admin Auth Function */ auth_util.isAdmin());
     });
 
-  app.use(router.routes()).use(router.allowedMethods());
-}
-
-module.exports = applyApiMiddleware;
+  return router;
+};

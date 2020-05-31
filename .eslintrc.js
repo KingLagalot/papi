@@ -13,5 +13,6 @@ module.exports = {
   },
   rules: {
     // Add here all the extra rules based on the developer preferences
+    'camelcase': 'off',
   },
 };

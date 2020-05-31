@@ -9,10 +9,10 @@ exports.up = function(knex) {
 
     t.string('title').notNull();
     t.string('description').nullable();
-    t.string('copyright').notNull();
+    t.string('copyright').nullable();
     t.integer('author')
       .unsigned()
-      .notNullable();
+      .notNull();
     t.string('photo_url').nullable();
     t.integer('focal_length').nullable();
     t.integer('iso').nullable();
