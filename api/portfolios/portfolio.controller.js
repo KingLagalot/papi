@@ -9,13 +9,14 @@ const _portfolio = {
 };
 
 exports.get = async ctx => {
-  const portfolio_id = this.checkQuery('id')
+  const portfolio_id = ctx
+    .checkQuery('id')
     .isInt()
     .toInt();
 
-  if (this.errors) {
+  if (ctx.errors) {
     ctx.status = 400;
-    ctx.body = this.errors;
+    ctx.body = ctx.errors;
     return;
   }
 
@@ -26,19 +27,22 @@ exports.get = async ctx => {
 };
 
 exports.index = async ctx => {
-  const page = this.checkQuery('page')
+  const page = ctx
+    .checkQuery('page')
     .optional()
     .toInt();
-  var size = this.checkQuery('size')
+  var size = ctx
+    .checkQuery('size')
     .optional()
     .toInt();
-  var admin = this.checkQuery('admin')
+  var admin = ctx
+    .checkQuery('admin')
     .optional()
     .toBoolean();
 
-  if (this.errors) {
+  if (ctx.errors) {
     ctx.status = 400;
-    ctx.body = this.errors;
+    ctx.body = ctx.errors;
     return;
   }
 
@@ -69,19 +73,21 @@ exports.index = async ctx => {
 };
 
 exports.update = async ctx => {
-  const id = this.checkBody('id')
+  const id = ctx
+    .checkBody('id')
     .isInt()
     .toInt();
   var body = _portfolio;
-  body.first_name = this.checkBody('first_name').optional();
-  body.last_name = this.checkBody('last_name').optional();
-  body.email = this.checkBody('email')
+  body.first_name = ctx.checkBody('first_name').optional();
+  body.last_name = ctx.checkBody('last_name').optional();
+  body.email = ctx
+    .checkBody('email')
     .optional()
     .isEmail();
 
-  if (this.errors) {
+  if (ctx.errors) {
     ctx.status = 400;
-    ctx.body = this.errors;
+    ctx.body = ctx.errors;
     return;
   }
 
@@ -92,15 +98,17 @@ exports.update = async ctx => {
 };
 
 exports.addPhoto = async ctx => {
-  const photo_id = this.checkBody('photo_id')
+  const photo_id = ctx
+    .checkBody('photo_id')
     .isInt()
     .toInt();
-  const portfolio_id = this.checkBody('portfolio_id')
+  const portfolio_id = ctx
+    .checkBody('portfolio_id')
     .isInt()
     .toInt();
-  if (this.errors) {
+  if (ctx.errors) {
     ctx.status = 400;
-    ctx.body = this.errors;
+    ctx.body = ctx.errors;
     return;
   }
   console.log('addphoto');

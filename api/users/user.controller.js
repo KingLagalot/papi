@@ -10,13 +10,14 @@ const _user = {
 };
 
 exports.get = async ctx => {
-  const user_id = this.checkQuery('id')
+  const user_id = ctx
+    .checkQuery('id')
     .isInt()
     .toInt();
 
-  if (this.errors) {
+  if (ctx.errors) {
     ctx.status = 400;
-    ctx.body = this.errors;
+    ctx.body = ctx.errors;
     return;
   }
 
@@ -27,16 +28,18 @@ exports.get = async ctx => {
 };
 
 exports.index = async ctx => {
-  const page = this.checkQuery('page')
+  const page = ctx
+    .checkQuery('page')
     .optional()
     .toInt();
-  var size = this.checkQuery('size')
+  var size = ctx
+    .checkQuery('size')
     .optional()
     .toInt();
 
-  if (this.errors) {
+  if (ctx.errors) {
     ctx.status = 400;
-    ctx.body = this.errors;
+    ctx.body = ctx.errors;
     return;
   }
 
@@ -58,17 +61,18 @@ exports.index = async ctx => {
 };
 
 exports.update = async ctx => {
-  const id = this.checkBody('id').isInt();
+  const id = ctx.checkBody('id').isInt();
   var body = _user;
-  body.first_name = this.checkBody('first_name').optional();
-  body.last_name = this.checkBody('last_name').optional();
-  body.email = this.checkBody('email')
+  body.first_name = ctx.checkBody('first_name').optional();
+  body.last_name = ctx.checkBody('last_name').optional();
+  body.email = ctx
+    .checkBody('email')
     .optional()
     .isEmail();
 
-  if (this.errors) {
+  if (ctx.errors) {
     ctx.status = 400;
-    ctx.body = this.errors;
+    ctx.body = ctx.errors;
     return;
   }
 

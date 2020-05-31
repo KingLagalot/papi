@@ -16,13 +16,14 @@ const _image = {
 };
 
 exports.get = async ctx => {
-  const image_id = this.checkQuery('id')
+  const image_id = ctx
+    .checkQuery('id')
     .isInt()
     .toInt();
 
-  if (this.errors) {
+  if (ctx.errors) {
     ctx.status = 400;
-    ctx.body = this.errors;
+    ctx.body = ctx.errors;
     return;
   }
 
@@ -33,19 +34,22 @@ exports.get = async ctx => {
 };
 
 exports.index = async ctx => {
-  const page = this.checkQuery('page')
+  const page = ctx
+    .checkQuery('page')
     .optional()
     .toInt();
-  var size = this.checkQuery('size')
+  var size = ctx
+    .checkQuery('size')
     .optional()
     .toInt();
-  var admin = this.checkQuery('admin')
+  var admin = ctx
+    .checkQuery('admin')
     .optional()
     .toBoolean();
 
-  if (this.errors) {
+  if (ctx.errors) {
     ctx.status = 400;
-    ctx.body = this.errors;
+    ctx.body = ctx.errors;
     return;
   }
 
@@ -77,33 +81,37 @@ exports.index = async ctx => {
 
 exports.create = async ctx => {
   const user_id = 0;
-  const portfolio_id = this.checkBody('portfolio_id')
+  const portfolio_id = ctx
+    .checkBody('portfolio_id')
     .optional()
     .isInt()
     .toInt();
   var image = _image;
-  image.title = this.checkBody('title');
-  image.description = this.checkBody('description').optional();
-  image.copyright = this.checkBody('copyright').optional();
+  image.title = ctx.checkBody('title');
+  image.description = ctx.checkBody('description').optional();
+  image.copyright = ctx.checkBody('copyright').optional();
   image.author = user_id;
-  image.photo_url = this.checkFile('file')
+  image.photo_url = ctx
+    .checkFile('file')
     .notEmpty()
     .copy('/')
     .delete();
-  image.focal_length = this.checkBody('focal_length')
+  image.focal_length = ctx
+    .checkBody('focal_length')
     .optional()
     .isInt()
     .toInt();
-  image.iso = this.checkBody('iso')
+  image.iso = ctx
+    .checkBody('iso')
     .optional()
     .isInt()
     .toInt();
-  image.lens = this.checkBody('lens').optional();
-  image.coordinates = this.checkBody('coordinates').optional();
+  image.lens = ctx.checkBody('lens').optional();
+  image.coordinates = ctx.checkBody('coordinates').optional();
 
-  if (this.errors) {
+  if (ctx.errors) {
     ctx.status = 400;
-    ctx.body = this.errors;
+    ctx.body = ctx.errors;
     return;
   }
 
@@ -121,19 +129,21 @@ exports.create = async ctx => {
 };
 
 exports.update = async ctx => {
-  const id = this.checkBody('id')
+  const id = ctx
+    .checkBody('id')
     .isInt()
     .toInt();
   var body = _image;
-  body.first_name = this.checkBody('first_name').optional();
-  body.last_name = this.checkBody('last_name').optional();
-  body.email = this.checkBody('email')
+  body.first_name = ctx.checkBody('first_name').optional();
+  body.last_name = ctx.checkBody('last_name').optional();
+  body.email = ctx
+    .checkBody('email')
     .optional()
     .isEmail();
 
-  if (this.errors) {
+  if (ctx.errors) {
     ctx.status = 400;
-    ctx.body = this.errors;
+    ctx.body = ctx.errors;
     return;
   }
 
