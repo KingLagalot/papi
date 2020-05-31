@@ -9,9 +9,10 @@
     "format": "prettier --write \"**/*.+(js|yml|yaml|json)\"",
     "lint": "eslint .",
     "start": "node index.js",
-    "test": "NODE_ENV=test jest'"
+    "test": "NODE_ENV=test ./node_modules/mocha/bin/mocha"
   },
   "devDependencies": {
+    "coveralls": "^3.1.0",
     "eslint": "5.16.0",
     "eslint-config-prettier": "4.3.0",
     "eslint-config-standard": "12.0.0",
@@ -22,8 +23,11 @@
     "eslint-plugin-promise": "4.1.1",
     "eslint-plugin-standard": "4.0.0",
     "husky": "2.3.0",
+    "mocha": "^7.2.0",
     "nodemon": "1.19.0",
-    "prettier": "1.17.1"
+    "nyc": "^15.0.1",
+    "prettier": "1.17.1",
+    "supertest": "^4.0.2"
   },
   "dependencies": {
     "@koa/cors": "2.2.3",

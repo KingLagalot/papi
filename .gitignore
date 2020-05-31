@@ -18,6 +18,7 @@ coverage
 node_modules/
 
 # Optional npm cache directory
+package-lock.json
 .npm
 
 # Optional eslint cache

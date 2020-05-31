@@ -6,7 +6,7 @@ module.exports = {
     'jest/globals': true,
   },
   extends: ['standard', 'plugin:prettier/recommended'],
-  plugins: ['prettier', 'jest'],
+  plugins: ['prettier'],
   parserOptions: {
     ecmaVersion: 2019,
     sourceType: 'module',
