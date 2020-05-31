@@ -6,62 +6,35 @@ const compress = require('koa-compress')();
 const cors = require('@koa/cors')();
 const helmet = require('koa-helmet')();
 const logger = require('koa-logger')();
-const docs = require('koa-docs');
 
 const errorHandler = require('./middleware/error.middleware');
 const applyApiMiddleware = require('./api');
 const { isDevelopment } = require('./config');
-require('koa2-ctx-validator')(Koa);
+const server = new Koa();
 
-Koa.use(
+server.use(
   require('koa-body')({
     multipart: true,
     formidable: { keepExtensions: true },
   }),
 );
 
-Koa.use(
+server.use(
   protect.koa.sqlInjection({
     body: true,
     loggerFunction: console.error,
   }),
 );
 
-Koa.use(
+server.use(
   protect.koa.xss({
     body: true,
     loggerFunction: console.error,
   }),
 );
 
-Koa.use(
-  docs.get('/docs', {
-    title: 'pAPI',
-    version: '1.0.0',
-
-    theme: 'simplex',
-
-    routeHandlers: 'disabled', // Hide the route implementation code from docs
-
-    groups: [
-      {
-        groupName: 'Users',
-        routes: [
-          /*  ... route specs ...  */
-        ],
-      },
-      {
-        groupName: 'Portfolios',
-        routes: [
-          /*  ... route specs ...  */
-        ],
-      },
-    ],
-  }),
-);
-
 const db = new Map();
-Koa.use(
+server.use(
   ratelimit({
     driver: 'memory',
     db: db,
@@ -77,7 +50,7 @@ Koa.use(
   }),
 );
 
-const server = new Koa();
+require('koa2-ctx-validator')(server);
 
 /**
  * Add here only development middlewares

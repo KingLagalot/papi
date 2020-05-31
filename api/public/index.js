@@ -7,7 +7,7 @@ const baseName = path.basename(__filename);
 
 module.exports = Router => {
   const router = new Router({
-    prefix: `/admin`,
+    prefix: `/public`,
   });
 
   // Require all the folders and create a sub-router for each feature api
@@ -15,7 +15,7 @@ module.exports = Router => {
     .filter(file => file.indexOf('.') !== 0 && file !== baseName)
     .forEach(file => {
       const api = require(path.join(__dirname, file))(Router);
-      router.use(api.routes(), auth_util.admin);
+      router.use(api.routes());
     });
 
   return router;

@@ -1,9 +1,9 @@
 exports.up = function(knex) {
   return knex.schema.createTable('portfolios_images', function(t) {
-    t.increments('portfolio_id')
+    t.integer('portfolio_id')
       .unsigned()
       .notNull();
-    t.increments('image_id')
+    t.integer('image_id')
       .unsigned()
       .notNull();
   });

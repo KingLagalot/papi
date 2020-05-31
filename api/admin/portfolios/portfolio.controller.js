@@ -1,7 +1,7 @@
 'use strict';
 
-const db_util = require('../../utils/db.util');
-const db = require('../../lib/db')('portfolios');
+const db_util = require('../../../utils/db.util');
+const db = require('../../../lib/db')('portfolios');
 
 const _portfolio = {
   title: null,
@@ -90,6 +90,9 @@ exports.update = async ctx => {
   ctx.status = 200;
   ctx.body = portfolio;
 };
+
+exports.create = async ctx => {
+}
 
 exports.addPhoto = async ctx => {
   const photo_id = this.checkBody('photo_id')

@@ -1,7 +1,7 @@
 'use strict';
 
-const db_util = require('../../utils/db.util');
-const db = require('../../lib/db')('images');
+const db_util = require('../../../utils/db.util');
+const db = require('../../../lib/db')('images');
 
 const _image = {
   title: null,

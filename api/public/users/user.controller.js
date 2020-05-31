@@ -1,7 +1,7 @@
 'use strict';
 
-const db_util = require('../../utils/db.util');
-const db = require('../../lib/db')('users');
+const db_util = require('../../../utils/db.util');
+const db = require('../../../lib/db')('users');
 
 const _user = {
   first_name: null,

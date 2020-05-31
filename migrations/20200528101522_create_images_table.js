@@ -17,7 +17,6 @@ exports.up = function(knex) {
     t.integer('focal_length').nullable();
     t.integer('iso').nullable();
     t.string('lens').nullable();
-    t.specificType('coordinates', 'geometry(point, 4326)');
   });
 };
 

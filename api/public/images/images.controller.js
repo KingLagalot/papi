@@ -1,7 +1,7 @@
 'use strict';
 
-const db_util = require('../../utils/db.util');
-const db = require('../../lib/db')('images');
+const db_util = require('../../../utils/db.util');
+const db = require('../../../lib/db')('images');
 
 const _image = {
   title: null,
@@ -120,7 +120,7 @@ exports.create = async ctx => {
 
   // If portfolio is specified, insert
   if (portfolio_id) {
-    const pivot_db = require('../../lib/db')('portfolios_images');
+    const pivot_db = require('../../../lib/db')('portfolios_images');
     pivot_db.insert({ portfolio_id: portfolio_id, image_id: body.id });
   }
 

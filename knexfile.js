@@ -45,8 +45,9 @@ module.exports = {
 
   test: {
     client: 'sqlite3',
+    useNullAsDefault: true,
     connection: {
-      filename: './mydb.sqlite',
+      filename: './test/test_db.sqlite',
     },
   },
 
