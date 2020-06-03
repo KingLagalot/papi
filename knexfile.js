@@ -44,10 +44,24 @@ module.exports = {
   },
 
   test: {
-    client: 'sqlite3',
-    useNullAsDefault: true,
+    client: 'postgresql',
     connection: {
-      filename: './test/test_db.sqlite',
+      port: 5432,
+      host: 'localhost',
+      database: 'knex',
+      user: 'knex',
+      password: 'password',
+    },
+    pool: {
+      min: process.env.DATABASE_POOL_MIN,
+      max: process.env.DATABASE_POOL_MAX,
+    },
+    migrations: {
+      directory: './db/migrations',
+      tableName: 'knex_migrations',
+    },
+    seeds: {
+      directory: './db/seeds',
     },
   },
 

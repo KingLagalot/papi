@@ -3,16 +3,15 @@ module.exports = {
     browser: true,
     commonjs: true,
     es6: true,
-    'jest/globals': true,
   },
-  extends: ['standard', 'plugin:prettier/recommended'],
-  plugins: ['prettier'],
+  extends: ['airbnb-base', 'plugin:mocha/recommended'],
+  plugins: ['mocha'],
   parserOptions: {
     ecmaVersion: 2019,
     sourceType: 'module',
   },
   rules: {
     // Add here all the extra rules based on the developer preferences
-    'camelcase': 'off',
+    camelcase: 'off',
   },
 };

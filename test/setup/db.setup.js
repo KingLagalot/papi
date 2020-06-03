@@ -1,42 +1,17 @@
-const { exec } = require("child_process");
-const fs = require('fs');
+/* eslint-disable mocha/no-hooks-for-single-case */
+/* eslint-disable no-undef */
+/* eslint-disable mocha/no-top-level-hooks */
+/* eslint-disable mocha/no-mocha-arrows */
+const knex = require('../../lib/db');
 /**
  * Sets up test database, runs asll migrations up.
  */
-before(async () => {  
-    await new Promise((resolve, reject) => exec("./node_modules/knex/bin/cli.js migrate:latest", (error, stdout, stderr) => {
-        if (error) {
-            console.log(`error: ${error.message}`);
-            process.exit(1);
-        }
-        if (stderr) {
-            console.log(`stderr: ${stderr}`);
-            process.exit(1);
-        }
-        console.log(`stdout: ${stdout}`);
-        resolve();
-    }));
-
-    });
+before((done) => {
+  knex().migrate.latest().then(() => done());
+});
 /**
  * Shuts down test database, runs all migrations down.
  */
-after(async () => {  
-    await new Promise((resolve, reject) => exec("./node_modules/knex/bin/cli.js migrate:rollback --all", (error, stdout, stderr) => {
-        if (error) {
-            console.log(`error: ${error.message}`);
-            process.exit(1);
-        }
-        if (stderr) {
-            console.log(`stderr: ${stderr}`);
-            process.exit(1);
-        }
-        console.log(`stdout: ${stdout}`);
-        resolve();
-    }));
-    try{
-        fs.unlinkSync(`${__dirname}/../test_db.sqlite`)
-    }catch(err){
-        console.error(err);
-    }
+after((done) => {
+  knex().migrate.rollback().then(() => done());
 });

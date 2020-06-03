@@ -7,9 +7,13 @@ const cors = require('@koa/cors')();
 const helmet = require('koa-helmet')();
 const logger = require('koa-logger')();
 
+const session = require('koa-session');
+const passport = require('koa-passport');
+
 const errorHandler = require('./middleware/error.middleware');
 const applyApiMiddleware = require('./api');
 const { isDevelopment } = require('./config');
+
 const server = new Koa();
 
 server.use(
@@ -18,6 +22,14 @@ server.use(
     formidable: { keepExtensions: true },
   }),
 );
+
+server.keys = ['secret'];
+server.use(session({}, server));
+
+require('./lib/auth');
+
+server.use(passport.initialize());
+server.use(passport.session());
 
 server.use(
   protect.koa.sqlInjection({
@@ -37,10 +49,10 @@ const db = new Map();
 server.use(
   ratelimit({
     driver: 'memory',
-    db: db,
+    db,
     duration: 60000,
     errorMessage: 'Sometimes You Just Have to Slow Down.',
-    id: ctx => ctx.ip,
+    id: (ctx) => ctx.ip,
     headers: {
       remaining: 'Rate-Limit-Remaining',
       reset: 'Rate-Limit-Reset',

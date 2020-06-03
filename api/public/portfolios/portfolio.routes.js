@@ -1,16 +1,13 @@
-'use strict';
 
 const controller = require('./portfolio.controller');
 
-module.exports = Router => {
+module.exports = (Router) => {
   const router = new Router({
-    prefix: `/portfolios`,
+    prefix: '/portfolios',
   });
 
   router
-    .get('/:id', controller.get)
-    .get('/', controller.index)
-    .put('/', controller.update)
+    .get('/:id', controller.get);
 
   return router;
 };

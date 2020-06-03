@@ -1,23 +1,38 @@
-'use strict';
 
 const request = require('supertest');
 const app = require('../../../../server');
+const route = require('../../../factories/route.factory').route('/public/portfolios');
+const portfolio_factory = require('../../../factories/portfolio.factory');
+const Portfolio = require('../../../../lib/models/photo.model');
 
 require('should');
 
-describe('API - Portfolios', function() {
-  var server;
-  this.beforeEach(function() {
+describe('API /public/portfolios', function () {
+  let server;
+  let portfolio;
+  let id;
+
+  this.beforeEach(async () => {
     server = app.listen();
+    portfolio = await portfolio_factory.default(true);
+    id = portfolio.id;
   });
-  afterEach(function() {
+  afterEach(async function() {
     server.close();
   });
-  it('file sanitizers', done => {
+  it('get /:id', function(done) {
     request(server)
-      .post('/upload')
-      .send({ type: 'js' })
-      .expect(200)
-      .expect('ok', done);
+      .get(`${route}/${id}`)
+      .expect(200, done);
+  });
+  it('get /:id - wrong id', function(done) {
+    request(server)
+      .get(`${route}/${id}`)
+      .expect(404, done);
+  });
+  it('get /:id - not public', function(done) {
+    request(server)
+      .get(`${route}/${id}`)
+      .expect(404, done);
   });
 });

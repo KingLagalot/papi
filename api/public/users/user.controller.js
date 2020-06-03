@@ -1,19 +1,9 @@
-'use strict';
 
 const db_util = require('../../../utils/db.util');
-const db = require('../../../lib/db')('users');
+const User = require('../../../lib/models/user.model');
 
-const _user = {
-  first_name: null,
-  last_name: null,
-  email: null,
-};
-
-exports.get = async ctx => {
-  const user_id = ctx
-    .checkQuery('id')
-    .isInt()
-    .toInt();
+exports.get = async (ctx) => {
+  const user_id = ctx.checkParams('id').toInt().value;
 
   if (ctx.errors) {
     ctx.status = 400;
@@ -21,21 +11,21 @@ exports.get = async ctx => {
     return;
   }
 
-  const user = await db.where({ id: user_id }).first();
+  const user = await User.get({ id: user_id });
   ctx.assert(user, 404, 'The requested user does not exist');
   ctx.status = 200;
   ctx.body = user;
 };
 
-exports.index = async ctx => {
-  const page = ctx
-    .checkQuery('page')
-    .optional()
-    .toInt();
-  var size = ctx
-    .checkQuery('size')
-    .optional()
-    .toInt();
+exports.photos = async (ctx) => {
+  // Check for params
+  const user_id = ctx.checkParams('id').toInt().value;
+
+  const user = await User.get({ id: user_id });
+  ctx.assert(user, 404, 'The requested user does not exist');
+
+  const query = user.getPhotosQuery();
+  const body = await db_util.paginate(query, ctx);
 
   if (ctx.errors) {
     ctx.status = 400;
@@ -43,32 +33,19 @@ exports.index = async ctx => {
     return;
   }
 
-  if (page && !size) {
-    size = 25;
-  }
-
-  var query = db.select();
-  var users;
-
-  if (page) {
-    users = db_util.paginate(query, page, size);
-  } else {
-    users = await query;
-  }
-
   ctx.status = 200;
-  ctx.body = users;
+  ctx.body = body;
 };
 
-exports.update = async ctx => {
-  const id = ctx.checkBody('id').isInt();
-  var body = _user;
-  body.first_name = ctx.checkBody('first_name').optional();
-  body.last_name = ctx.checkBody('last_name').optional();
-  body.email = ctx
-    .checkBody('email')
-    .optional()
-    .isEmail();
+exports.portfolios = async (ctx) => {
+  // Check for params
+  const user_id = ctx.checkParams('id').toInt().value;
+
+  const user = await User.get({ id: user_id });
+  ctx.assert(user, 404, 'The requested user does not exist');
+
+  const query = user.getPortfoliosQuery();
+  const body = await db_util.paginate(query, ctx);
 
   if (ctx.errors) {
     ctx.status = 400;
@@ -76,8 +53,8 @@ exports.update = async ctx => {
     return;
   }
 
-  db_util.clean(body);
-  const user = await db.where('id', '=', id).update(body);
+  // END
+
   ctx.status = 200;
-  ctx.body = user;
+  ctx.body = body;
 };
