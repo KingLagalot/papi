@@ -2,6 +2,7 @@
 const http = require('http');
 const server = require('./server');
 const db = require('./lib/db');
+require('dotenv').config()
 
 const { port } = require('./config').server;
 

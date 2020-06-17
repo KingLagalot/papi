@@ -2,29 +2,19 @@
 const db_util = require('../../../utils/db.util');
 const db = require('../../../lib/db')('users');
 
-exports.get = async (ctx) => {
-  const user_id = this.checkQuery('id')
-    .isInt()
-    .toInt();
+exports.get = (ctx, done) => {
 
-  if (this.errors) {
-    ctx.status = 400;
-    ctx.body = this.errors;
-    return;
-  }
-
-  const user = await db.where({ id: user_id }).first();
-  ctx.assert(user, 404, 'The requested user does not exist');
+  ctx.assert(ctx.user, 404, 'The requested user does not exist');
+  ctx.body = ctx.user;
   ctx.status = 200;
-  ctx.body = user;
+  done();
 };
 
 exports.update = async (ctx) => {
-  const id = this.checkBody('id').isInt();
-  const body = _user;
-  body.first_name = this.checkBody('first_name').optional();
-  body.last_name = this.checkBody('last_name').optional();
-  body.email = this.checkBody('email')
+  const body = {};
+  body.first_name = ctx.checkBody('first_name').optional();
+  body.last_name = ctx.checkBody('last_name').optional();
+  body.email = ctx.checkBody('email')
     .optional()
     .isEmail();
 
@@ -35,7 +25,7 @@ exports.update = async (ctx) => {
   }
 
   db_util.clean(body);
-  const user = await db.where('id', '=', id).update(body);
+  const user = await db.where('id', '=', ctx.user.id).update(body);
   ctx.status = 200;
   ctx.body = user;
 };

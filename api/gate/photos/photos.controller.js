@@ -3,8 +3,6 @@ const db_util = require('../../../utils/db.util');
 const Photo = require('../../../lib/models/photo.model');
 
 exports.get = async (ctx) => {
-  // Auth get user id
-  const user = null;
   const photo_id = ctx.checkQuery('id')
     .toInt().value;
 
@@ -14,17 +12,14 @@ exports.get = async (ctx) => {
     return;
   }
 
-  const photo = await Photo.get({ id: photo_id, author_id: user.id });
+  const photo = await Photo.get({ id: photo_id, author_id: ctx.user.id });
   ctx.assert(photo, 404, 'The requested photo does not exist');
   ctx.status = 200;
   ctx.body = photo;
 };
 
 exports.index = async (ctx) => {
-  // Auth get user id
-  const user = null;
-
-  const query = user.getPhotosQuery();
+  const query = ctx.user.getPhotosQuery();
 
   const body = await db_util.paginate(query, ctx);
   if (ctx.errors) {

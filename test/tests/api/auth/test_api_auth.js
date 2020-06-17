@@ -28,10 +28,7 @@ describe('API /auth', function () {
         email: user.email,
         password: user.password,
       })
-      .expect(201)
-      .then((resp) => {
-        console.log(resp);
-      });
+      .expect(201);
   });
   it('post /login', async () => {
     const user = await user_factory.default(true, {}, ['password']);

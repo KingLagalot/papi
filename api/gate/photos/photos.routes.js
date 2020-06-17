@@ -9,7 +9,7 @@ module.exports = (Router) => {
   router
     .get('/:id', controller.get)
     .get('/', controller.index)
-    .put('/', controller.update)
+    .put('/:id', controller.update)
     .post('/', controller.create);
 
   return router;

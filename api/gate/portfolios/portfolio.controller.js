@@ -8,9 +8,8 @@ const _portfolio = {
 };
 
 exports.get = async (ctx) => {
-  const portfolio_id = this.checkQuery('id')
-    .isInt()
-    .toInt();
+  const portfolio_id = ctx.checkQuery('id')
+    .toInt().value;
 
   if (this.errors) {
     ctx.status = 400;
@@ -18,65 +17,33 @@ exports.get = async (ctx) => {
     return;
   }
 
-  const portfolio = await db.where({ id: portfolio_id }).first();
+  const portfolio = await db.where({ id: portfolio_id, author_id: ctx.user.id }).first();
   ctx.assert(portfolio, 404, 'The requested portfolio does not exist');
   ctx.status = 200;
   ctx.body = portfolio;
 };
 
 exports.index = async (ctx) => {
-  const page = this.checkQuery('page')
-    .optional()
-    .toInt();
-  let size = this.checkQuery('size')
-    .optional()
-    .toInt();
-  const admin = this.checkQuery('admin')
-    .optional()
-    .toBoolean();
+  const query = ctx.user.getPortfoliosQuery();
+
+  const body = await db_util.paginate(query, ctx);
 
   if (this.errors) {
     ctx.status = 400;
     ctx.body = this.errors;
     return;
   }
-
-  // Use auth for user_id
-  const user_id = 0;
-
-  // If admin check for admin, then if true return all records
-  let query;
-  if (admin) {
-    query = db;
-  } else {
-    query = db.where('author', '=', user_id);
-  }
-
-  if (page && !size) {
-    size = 25;
-  }
-
-  let portfolio;
-  if (page) {
-    portfolio = db_util.paginate(query, page, size);
-  } else {
-    portfolio = await db.select();
-  }
-
   ctx.status = 200;
-  ctx.body = portfolio;
+  ctx.body = body;
 };
 
 exports.update = async (ctx) => {
-  const id = this.checkBody('id')
-    .isInt()
-    .toInt();
-  const body = _portfolio;
-  body.first_name = this.checkBody('first_name').optional();
-  body.last_name = this.checkBody('last_name').optional();
-  body.email = this.checkBody('email')
-    .optional()
-    .isEmail();
+  const id = ctx.checkQuery('id')
+    .toInt().value;
+  const body = {};
+  body.title = ctx.checkBody('title').optional().value;
+  body.description = ctx.checkBody('description').optional().value;
+  body.public = ctx.checkBody('public').optional().isBool().value;
 
   if (this.errors) {
     ctx.status = 400;
@@ -91,20 +58,29 @@ exports.update = async (ctx) => {
 };
 
 exports.create = async (ctx) => {
+  const body = {};
+  body.title = ctx.checkBody('title').optional().value;
+  body.description = ctx.checkBody('description').optional().value;
+  body.public = ctx.checkBody('public').optional().isBool().value;
+  body.author_id = ctx.user.id;
+  var portf = Portfolio.create(body);
+
+  ctx.body = portf;
+  ctx.status = 200;
 };
 
-exports.addPhoto = async (ctx) => {
-  const photo_id = this.checkBody('photo_id')
-    .isInt()
-    .toInt();
-  const portfolio_id = this.checkBody('portfolio_id')
-    .isInt()
-    .toInt();
+exports.addPhotos = async (ctx) => {
+  const photo_id = ctx.checkBody('photo_id')
+    .toInt().value;
+  const portfolio_id = ctx.checkQuery('id')
+    .toInt().value;
   if (this.errors) {
     ctx.status = 400;
     ctx.body = this.errors;
     return;
   }
+  const pf = await Portfolio.get({id: portfolio_id});
+  await pf.addPhoto(photo_id);
   console.log('addphoto');
   // Add photo to portfolio
 };

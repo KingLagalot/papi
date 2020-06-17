@@ -1,6 +1,7 @@
 
 const passport = require('koa-passport');
 const User = require('../../lib/models/user.model');
+var jwt = require('jwt-simple');
 
 exports.register = async (ctx) => {
   const username = ctx.checkBody('username').value;
@@ -38,24 +39,13 @@ exports.login = async (ctx) => {
   }
 
   await new Promise((resolve, reject) => {
-    passport.authenticate('authtoken', { session: false, optional: false }, (err, user, info, status) => {
-      if (user) {
-        ctx.login(user);
-        ctx.status = 200;
-        ctx.body = user;
-        resolve();
-      } else {
-        ctx.status = 400;
-        ctx.body = { status: 'error' };
-        reject();
-      }
-    })(ctx);
-
     passport.authenticate('local', (err, user, info, status) => {
       if (user) {
         ctx.login(user);
         ctx.status = 200;
-        ctx.body = user;
+        // 4 hours til expiration
+        const token = jwt.encode({user_id: user.id, exp: Math.round(new Date().getTime() / 1000) + (3600 * 4)}, process.env.SECRET)
+        ctx.body = {token: token};
         resolve();
       } else {
         ctx.status = 400;

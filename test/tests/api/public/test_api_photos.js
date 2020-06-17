@@ -4,7 +4,6 @@ const assert = require('assert');
 const app = require('../../../../server');
 const route = require('../../../factories/route.factory').route('/public/photos');
 const photo_factory = require('../../../factories/photo.factory');
-const Photo = require('../../../../lib/models/photo.model');
 
 require('should');
 
