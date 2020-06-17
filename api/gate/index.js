@@ -1,7 +1,6 @@
 
 const fs = require('fs');
 const path = require('path');
-const auth_util = require('../../utils/auth.util');
 
 const baseName = path.basename(__filename);
 
@@ -15,7 +14,7 @@ module.exports = (Router) => {
     .filter((file) => file.indexOf('.') !== 0 && file !== baseName)
     .forEach((file) => {
       const api = require(path.join(__dirname, file))(Router);
-      router.use(api.routes(), auth_util.admin);
+      router.use(api.routes());
     });
 
   return router;

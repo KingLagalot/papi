@@ -8,6 +8,7 @@ exports.up = function(knex) {
     t.integer('user_id')
         .unsigned()
         .notNull();
+    t.datetime('expiration').notNull();
   });
 };
 

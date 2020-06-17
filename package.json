@@ -58,6 +58,7 @@
     "koa-session": "^6.0.0",
     "koa-validate": "^1.0.7",
     "koa2-ctx-validator": "^1.0.4",
+    "moment": "^2.26.0",
     "passport": "^0.4.1",
     "passport-auth-token": "^1.0.1",
     "passport-local": "^1.0.0",

@@ -1,7 +1,6 @@
 
 const fs = require('fs');
 const path = require('path');
-const auth_util = require('../../utils/auth.util');
 
 const baseName = path.basename(__filename);
 

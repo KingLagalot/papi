@@ -38,11 +38,12 @@ exports.index = async (ctx) => {
 };
 
 exports.create = async (ctx) => {
-  const user_id = 0;
   const portfolio_id = ctx.checkBody('portfolio_id')
     .optional()
     .toInt().value;
+
   const photo = _photo;
+  photo.author_id = ctx.state.user.id;
   photo.title = ctx.checkBody('title');
   photo.description = ctx.checkBody('description').optional();
   photo.copyright = ctx.checkBody('copyright').optional();
@@ -74,6 +75,8 @@ exports.create = async (ctx) => {
     const pivot_db = require('../../lib/db')('portfolios_photos');
     pivot_db.insert({ portfolio_id, photo_id: body.id });
   }
+
+  // END transaction
 
   ctx.status = 200;
   ctx.body = body;

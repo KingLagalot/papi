@@ -1,6 +1,5 @@
 const faker = require('faker');
 const _ = require('underscore');
-const db = require('../../lib/db');
 const User = require('../../lib/models/user.model');
 
 function _user() {
