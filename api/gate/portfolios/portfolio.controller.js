@@ -1,23 +1,19 @@
 
 const db_util = require('../../../utils/db.util');
 const db = require('../../../lib/db')('portfolios');
-
-const _portfolio = {
-  title: null,
-  description: null,
-};
+const Portfolio = require('../../../lib/models/portfolio.model');
 
 exports.get = async (ctx) => {
   const portfolio_id = ctx.checkQuery('id')
     .toInt().value;
 
-  if (this.errors) {
+  if (ctx.errors) {
     ctx.status = 400;
-    ctx.body = this.errors;
+    ctx.body = ctx.errors;
     return;
   }
 
-  const portfolio = await db.where({ id: portfolio_id, author_id: ctx.user.id }).first();
+  const portfolio = await Portfolio.get({ id: portfolio_id, author_id: ctx.user.id });
   ctx.assert(portfolio, 404, 'The requested portfolio does not exist');
   ctx.status = 200;
   ctx.body = portfolio;
@@ -28,9 +24,9 @@ exports.index = async (ctx) => {
 
   const body = await db_util.paginate(query, ctx);
 
-  if (this.errors) {
+  if (ctx.errors) {
     ctx.status = 400;
-    ctx.body = this.errors;
+    ctx.body = ctx.errors;
     return;
   }
   ctx.status = 200;
@@ -45,9 +41,9 @@ exports.update = async (ctx) => {
   body.description = ctx.checkBody('description').optional().value;
   body.public = ctx.checkBody('public').optional().isBool().value;
 
-  if (this.errors) {
+  if (ctx.errors) {
     ctx.status = 400;
-    ctx.body = this.errors;
+    ctx.body = ctx.errors;
     return;
   }
 
@@ -70,17 +66,21 @@ exports.create = async (ctx) => {
 };
 
 exports.addPhotos = async (ctx) => {
-  const photo_id = ctx.checkBody('photo_id')
-    .toInt().value;
+  const photos = ctx.checkBody('photos').value;
+  if(!Array.isArray(photos)){
+    ctx.addError('photos must be an array of ids');
+  }
   const portfolio_id = ctx.checkQuery('id')
     .toInt().value;
-  if (this.errors) {
+  if (ctx.errors) {
     ctx.status = 400;
-    ctx.body = this.errors;
+    ctx.body = ctx.errors;
     return;
   }
   const pf = await Portfolio.get({id: portfolio_id});
-  await pf.addPhoto(photo_id);
-  console.log('addphoto');
-  // Add photo to portfolio
+  photos.forEach(async photo_id => {
+    await pf.addPhoto(photo_id);
+  });
+  ctx.body = pf.withPhotos();
+  ctx.status = 200;
 };

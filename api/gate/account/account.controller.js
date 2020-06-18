@@ -18,9 +18,9 @@ exports.update = async (ctx) => {
     .optional()
     .isEmail();
 
-  if (this.errors) {
+  if (ctx.errors) {
     ctx.status = 400;
-    ctx.body = this.errors;
+    ctx.body = ctx.errors;
     return;
   }
 

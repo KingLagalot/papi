@@ -1,7 +1,7 @@
 const faker = require('faker');
 const _ = require('underscore');
 const user_factory = require('./user.factory');
-const db = require('../../lib/db');
+const Portfolio = require('../../lib/models/portfolio.model');
 
 const _portfolio = {
   title: faker.lorem.word(),
@@ -16,8 +16,8 @@ exports.default = async (store_in_db, fields) => {
     ret.author_id = user.id;
   }
   if (store_in_db) {
-    const ids = await db('portfolios').insert(ret).returning('id');
-    ret.id = ids[0];
+    const id = await Portfolio.create(ret);
+    ret.id = id;
   }
   return ret;
 };
