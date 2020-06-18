@@ -1,5 +1,6 @@
 
 const request = require('supertest');
+const fs = require('fs');
 const app = require('../../../../server');
 const route = require('../../../factories/route.factory').route('/gate/photos');
 const user_factory = require('../../../factories/user.factory');
@@ -9,7 +10,7 @@ const photo_factory = require('../../../factories/photo.factory');
 require('should');
 
 describe('API /gate/photos', function () {
-  let server;
+  var server;
   var user;
   var token;
   var photo;
@@ -35,7 +36,7 @@ describe('API /gate/photos', function () {
     request(server)
       .get(`${route}/${photo.id +1}`)
       .set({'Token': token})
-      .expect(404, done);
+      .expect(404,done);
   });
 
   it('index /', function(done) {
@@ -50,10 +51,16 @@ describe('API /gate/photos', function () {
       .set({'Token': token})
       .expect(200, done)
   });
-  it('post /', function(done) {
+  it('create /', function(done) {
+    fs.closeSync(fs.openSync(`${__dirname}/test.png`, 'w'));
     request(server)
       .post(`${route}`)
+      .attach('file', `${__dirname}/test.png`)
       .set({'Token': token})
-      .expect(200, done)
+      .expect(200)
+      .end(function(err, res) {
+        fs.unlinkSync(`${__dirname}/test.png`);
+        done()
+      });
   });
 });

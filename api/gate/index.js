@@ -10,22 +10,15 @@ module.exports = (Router) => {
     prefix: '/gate',
   });
 
-  router.use(async (ctx) => {
-  await new Promise((resolve, reject) => {
-    passport.authenticate('authtoken', { session: false, optional: false}, (err, user, info, status) => {
+  router.use((ctx,done) => {
+    return passport.authenticate('authtoken', { session: false, optional: false}, (err, user, info, status) => {
       if (user) {
         ctx.login(user);
-        ctx.status = 200;
-        ctx.user = user;
-        resolve();
       } else {
-        ctx.status = 400;
-        ctx.body = { status: 'error' };
-        reject();
+        ctx.throw(401)
       }
-    })(ctx);
+    })(ctx).then(() => done());
   });
-  })
 
   // Require all the folders and create a sub-router for each feature api
   fs.readdirSync(__dirname)

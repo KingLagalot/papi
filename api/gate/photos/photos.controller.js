@@ -3,7 +3,7 @@ const db_util = require('../../../utils/db.util');
 const Photo = require('../../../lib/models/photo.model');
 
 exports.get = async (ctx) => {
-  const photo_id = ctx.checkQuery('id')
+  const photo_id = ctx.checkParams('id')
     .toInt().value;
 
   if (ctx.errors) {
@@ -12,14 +12,14 @@ exports.get = async (ctx) => {
     return;
   }
 
-  const photo = await Photo.get({ id: photo_id, author_id: ctx.user.id });
+  const photo = await Photo.get({ id: photo_id, author_id: ctx.state.user.id });
   ctx.assert(photo, 404, 'The requested photo does not exist');
   ctx.status = 200;
   ctx.body = photo;
 };
 
 exports.index = async (ctx) => {
-  const query = ctx.user.getPhotosQuery();
+  const query = ctx.state.user.getPhotosQuery();
 
   const body = await db_util.paginate(query, ctx);
   if (ctx.errors) {
@@ -37,24 +37,23 @@ exports.create = async (ctx) => {
     .optional()
     .toInt().value;
 
-  const photo = _photo;
+  var photo = {};
   photo.author_id = ctx.state.user.id;
-  photo.title = ctx.checkBody('title');
-  photo.description = ctx.checkBody('description').optional();
-  photo.copyright = ctx.checkBody('copyright').optional();
-  photo.author = user_id;
+  photo.title = ctx.checkBody('title').value;
+  photo.description = ctx.checkBody('description').optional().value;
+  photo.copyright = ctx.checkBody('copyright').optional().value;
+  photo.author_id = user_id;
   photo.photo_url = ctx.checkFile('file')
     .notEmpty()
     .copy('/')
     .delete();
   photo.focal_length = ctx.checkBody('focal_length')
     .optional()
-    .toInt();
+    .toInt().value;
   photo.iso = ctx.checkBody('iso')
     .optional()
-    .toInt();
-  photo.lens = ctx.checkBody('lens').optional();
-  photo.coordinates = ctx.checkBody('coordinates').optional();
+    .toInt().value;
+  photo.lens = ctx.checkBody('lens').optional().value;
 
   if (ctx.errors) {
     ctx.status = 400;
@@ -78,14 +77,19 @@ exports.create = async (ctx) => {
 };
 
 exports.update = async (ctx) => {
-  const id = ctx.checkBody('id')
+  const id = ctx.checkParams('id')
     .toInt().value;
-  const body = _photo;
-  body.first_name = ctx.checkBody('first_name').optional().value;
-  body.last_name = ctx.checkBody('last_name').optional().value;
-  body.email = ctx.checkBody('email')
+  var photo = {};
+  photo.title = ctx.checkBody('title').value;
+  photo.description = ctx.checkBody('description').optional().value;
+  photo.copyright = ctx.checkBody('copyright').optional().value;
+  photo.focal_length = ctx.checkBody('focal_length')
     .optional()
-    .isEmail().value;
+    .toInt().value;
+  photo.iso = ctx.checkBody('iso')
+    .optional()
+    .toInt().value;
+  photo.lens = ctx.checkBody('lens').optional().value;
 
   if (ctx.errors) {
     ctx.status = 400;
@@ -93,8 +97,8 @@ exports.update = async (ctx) => {
     return;
   }
 
-  db_util.clean(body);
-  const photo = db.where('id', '=', id).update(body);
+  db_util.clean(photo);
+  photo = Photo.update(id, photo);
   ctx.status = 200;
   ctx.body = photo;
 };

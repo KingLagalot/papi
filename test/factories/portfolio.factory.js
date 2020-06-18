@@ -10,14 +10,15 @@ const _portfolio = {
   public: false,
 };
 exports.default = async (store_in_db, fields) => {
-  const ret = _.extend({}, _portfolio, fields);
+  var ret = _.extend({}, _portfolio, fields);
   if (!fields || !fields.author_id) {
     const user = await user_factory.user(true);
     ret.author_id = user.id;
   }
   if (store_in_db) {
-    const id = await Portfolio.create(ret);
-    ret.id = id;
+    ret = await Portfolio.create(ret);
+  }else {
+    ret = Portfolio.fromObject(ret);
   }
   return ret;
 };

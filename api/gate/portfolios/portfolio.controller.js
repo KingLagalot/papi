@@ -13,14 +13,14 @@ exports.get = async (ctx) => {
     return;
   }
 
-  const portfolio = await Portfolio.get({ id: portfolio_id, author_id: ctx.user.id });
+  const portfolio = await Portfolio.get({ id: portfolio_id, author_id: ctx.state.user.id });
   ctx.assert(portfolio, 404, 'The requested portfolio does not exist');
   ctx.status = 200;
-  ctx.body = portfolio;
+  ctx.body = portfolio.withPhotos();
 };
 
 exports.index = async (ctx) => {
-  const query = ctx.user.getPortfoliosQuery();
+  const query = ctx.state.user.getPortfoliosQuery();
 
   const body = await db_util.paginate(query, ctx);
 
@@ -58,7 +58,7 @@ exports.create = async (ctx) => {
   body.title = ctx.checkBody('title').optional().value;
   body.description = ctx.checkBody('description').optional().value;
   body.public = ctx.checkBody('public').optional().isBool().value;
-  body.author_id = ctx.user.id;
+  body.author_id = ctx.state.user.id;
   var portf = Portfolio.create(body);
 
   ctx.body = portf;

@@ -28,6 +28,7 @@ describe('API /gate/account', function () {
   it('update /', function(done) {
     request(server)
       .put(`${route}`)
+      .send({'first_name': 'Test','last_name': 'Test'})
       .set({'Token': token})
       .expect(200, done)
   });
