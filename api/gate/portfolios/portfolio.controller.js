@@ -4,7 +4,7 @@ const db = require('../../../lib/db')('portfolios');
 const Portfolio = require('../../../lib/models/portfolio.model');
 
 exports.get = async (ctx) => {
-  const portfolio_id = ctx.checkQuery('id')
+  const portfolio_id = ctx.checkParams('id')
     .toInt().value;
 
   if (ctx.errors) {
@@ -16,7 +16,8 @@ exports.get = async (ctx) => {
   const portfolio = await Portfolio.get({ id: portfolio_id, author_id: ctx.state.user.id });
   ctx.assert(portfolio, 404, 'The requested portfolio does not exist');
   ctx.status = 200;
-  ctx.body = portfolio.withPhotos();
+  ctx.body = await portfolio.withPhotos();
+  return;
 };
 
 exports.index = async (ctx) => {

@@ -24,8 +24,12 @@ exports.paginate = async (query, ctx) => {
   const body = {};
   const offset = (page - 1) * size;
   return await Promise.all([
-    query.count('* as count').first(),
     query
+      .clone()
+      .count('* as count')
+      .first(),
+    query
+      .clone()
       .select('*')
       .offset(offset)
       .limit(size),

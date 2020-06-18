@@ -19,22 +19,19 @@ describe('API /gate/portfolios', function () {
     user = await user_factory.default(true, {}, ['password']);
     token = jwt_factory.default(user.id);
     portfolio = await portfolio_factory.default(true, {author_id: user.id});
+    for(var i = 0; i < 4; i++){
+      var photo = await photo_factory.default(true, {author_id: user.id})
+      await photo.addToPortfolio(portfolio.id);
+    }
   });
   afterEach(function() {
     server.close();
   });
-  it('get', async function() {
-    var photo = await photo_factory.default(true, {author_id: user.id})
-    photo.addToPortfolio(portfolio.id);
-    var photo = await photo_factory.default(true, {author_id: user.id})
-    photo.addToPortfolio(portfolio.id);
+  it('get', function(done) {
     request(server)
       .get(`${route}/${portfolio.id}`)
       .set({'Token': token})
-      .expect(200)
-      .then((res) => {
-          console.log(res);
-      });
+      .expect(200, done);
   });
   it('get - wrong id', function(done) {
     request(server)
@@ -50,8 +47,8 @@ describe('API /gate/portfolios', function () {
   });
   it('index - paginate', function(done) {
     request(server)
-      .query({page: 1})
       .get(`${route}`)
+      .query({page: 1})
       .set({'Token': token})
       .expect(200, done);
   });
