@@ -104,7 +104,7 @@ exports.del = async ctx => {
     return;
   }
 
-  const ret = await Photo.remove(id);
+  const ret = await Photo.remove(id, ctx.state.user.id);
   if (ret != 1) {
     return;
   }
