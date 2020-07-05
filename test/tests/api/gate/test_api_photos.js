@@ -49,18 +49,28 @@ describe('API /gate/photos', function () {
     request(server)
       .put(`${route}/${photo.id}`)
       .set({'Token': token})
+      .send({'title': 'Updated Title'})
       .expect(200, done)
   });
-  it('create /', function(done) {
-    fs.closeSync(fs.openSync(`${__dirname}/test.png`, 'w'));
-    request(server)
+  it('create /', async function() {
+    var _photo = await photo_factory.default(false);
+    var test = await photo_factory.createImageFile(__dirname);
+
+    await request(server)
       .post(`${route}`)
       .attach('file', `${__dirname}/test.png`)
       .set({'Token': token})
+      .field('title', 'New Photo')
+      .field('description', 'test')
       .expect(200)
-      .end(function(err, res) {
-        fs.unlinkSync(`${__dirname}/test.png`);
-        done()
-      });
+      .then(() => {
+        fs.unlinkSync(`${__dirname}/test.png`)
+      })
+  });
+  it('delete /{id}', function(done) {
+    request(server)
+      .del(`${route}/${photo.id}`)
+      .set({'Token': token})
+      .expect(204, done)
   });
 });

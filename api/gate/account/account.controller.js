@@ -3,12 +3,11 @@ const db_util = require('../../../utils/db.util');
 const db = require('../../../lib/db')('users');
 const User = require('../../../lib/models/user.model');
 
-exports.get = (ctx, done) => {
+exports.get = async (ctx) => {
 
   ctx.assert(ctx.state.user, 404, 'The requested user does not exist');
   ctx.body = ctx.state.user;
   ctx.status = 200;
-  return done();
 };
 
 exports.update = async (ctx) => {
@@ -29,4 +28,5 @@ exports.update = async (ctx) => {
   const id = await User.update(ctx.state.user.id, body);
   ctx.status = 200;
   ctx.body = id;
+  return;
 };

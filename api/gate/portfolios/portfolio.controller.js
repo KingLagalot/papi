@@ -14,7 +14,9 @@ exports.get = async (ctx) => {
   }
 
   const portfolio = await Portfolio.get({ id: portfolio_id, author_id: ctx.state.user.id });
-  ctx.assert(portfolio, 404, 'The requested portfolio does not exist');
+  if(!portfolio){
+    return;
+  }
   ctx.status = 200;
   ctx.body = await portfolio.withPhotos();
   return;
@@ -84,4 +86,21 @@ exports.addPhotos = async (ctx) => {
   });
   ctx.body = pf.withPhotos();
   ctx.status = 200;
+};
+
+exports.del = async (ctx) => {
+  const id = ctx.checkParams('id')
+    .toInt().value;
+
+  if (ctx.errors) {
+    ctx.status = 400;
+    ctx.body = ctx.errors;
+    return;
+  }
+
+  const ret = await Portfolio.remove(id);
+  if(ret != 1){
+    return
+  }
+  ctx.status = 204;
 };

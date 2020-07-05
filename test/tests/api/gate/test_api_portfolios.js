@@ -52,4 +52,10 @@ describe('API /gate/portfolios', function () {
       .set({'Token': token})
       .expect(200, done);
   });
+  it('delete /{id}', function(done) {
+    request(server)
+      .del(`${route}/${portfolio.id}`)
+      .set({'Token': token})
+      .expect(204, done)
+  });
 });

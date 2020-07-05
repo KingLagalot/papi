@@ -10,14 +10,15 @@ module.exports = (Router) => {
     prefix: '/gate',
   });
 
-  router.use((ctx,done) => {
-    return passport.authenticate('authtoken', { session: false, optional: false}, (err, user, info, status) => {
+  router.use(async (ctx, next) => {
+    await passport.authenticate('authtoken', { session: false, optional: false}, (err, user, info, status) => {
       if (user) {
         ctx.login(user);
       } else {
         ctx.throw(401)
       }
-    })(ctx).then(() => done());
+    })(ctx);
+    await next();
   });
 
   // Require all the folders and create a sub-router for each feature api

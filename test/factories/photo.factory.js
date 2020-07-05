@@ -1,16 +1,13 @@
 const faker = require('faker');
 const _ = require('underscore');
 const user_factory = require('./user.factory');
+var Jimp = require('jimp');
 const Photo = require('../../lib/models/photo.model');
 
 const _photo = {
   title: faker.lorem.word(),
   description: faker.lorem.sentences(),
-  copyright: faker.date.past().getFullYear(),
   author_id: null,
-  focal_length: faker.random.number(300),
-  iso: faker.random.arrayElement([50, 100, 200, 300, 400, 500, 600]),
-  lens: faker.random.word(),
   public: false,
 };
 exports.default = async (store_in_db, fields) => {
@@ -26,3 +23,18 @@ exports.default = async (store_in_db, fields) => {
   }
   return ret;
 };
+
+exports.createImageFile = async (dir) => {
+  return await Jimp.read({
+    url: 'https://picsum.photos/2048/2048', // Required!
+  })
+    .then(image => {
+      var temp = image.write(`${dir}/`, (err, val) => {
+        return val;
+      });
+      return temp;
+    })
+    .catch(err => {
+      console.error(err);
+    });
+}

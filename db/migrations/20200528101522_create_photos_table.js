@@ -16,6 +16,8 @@ exports.up = function (knex) {
     t.integer('focal_length').nullable();
     t.integer('iso').nullable();
     t.string('lens').nullable();
+    t.boolean('processing')
+      .defaultTo(true);
     t.boolean('public')
       .defaultTo(false);
   });

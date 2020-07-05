@@ -10,7 +10,8 @@ module.exports = (Router) => {
     .get('/:id', controller.get)
     .get('/', controller.index)
     .put('/', controller.update)
-    .post('/', controller.create);
+    .post('/', controller.create)
+    .del('/:id', controller.del);
 
   return router;
 };

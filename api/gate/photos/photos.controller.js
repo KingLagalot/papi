@@ -13,7 +13,9 @@ exports.get = async (ctx) => {
   }
 
   const photo = await Photo.get({ id: photo_id, author_id: ctx.state.user.id });
-  ctx.assert(photo, 404, 'The requested photo does not exist');
+  if(!photo){
+    return
+  }
   ctx.status = 200;
   ctx.body = photo;
 };
@@ -37,43 +39,38 @@ exports.create = async (ctx) => {
     .optional()
     .toInt().value;
 
-  var photo = {};
-  photo.author_id = ctx.state.user.id;
-  photo.title = ctx.checkBody('title').value;
-  photo.description = ctx.checkBody('description').optional().value;
-  photo.copyright = ctx.checkBody('copyright').optional().value;
-  photo.author_id = user_id;
-  photo.photo_url = ctx.checkFile('file')
-    .notEmpty()
-    .copy('/')
-    .delete();
-  photo.focal_length = ctx.checkBody('focal_length')
-    .optional()
-    .toInt().value;
-  photo.iso = ctx.checkBody('iso')
-    .optional()
-    .toInt().value;
-  photo.lens = ctx.checkBody('lens').optional().value;
+  var photo_obj = {};
+  photo_obj.author_id = ctx.state.user.id;
+  photo_obj.title = ctx.checkBody('title').value;
+  photo_obj.description = ctx.checkBody('description').optional().value;
 
   if (ctx.errors) {
     ctx.status = 400;
     ctx.body = ctx.errors;
     return;
   }
+  const photo = await Photo.create(photo_obj);
 
-  // TODO use transaction
-  const body = db.insert(photo);
 
-  // If portfolio is specified, insert
-  if (portfolio_id) {
-    const pivot_db = require('../../lib/db')('portfolios_photos');
-    pivot_db.insert({ portfolio_id, photo_id: body.id });
+  var file;
+  try{
+    file = ctx.checkFile('file').value;
+      //.move(`${process.env.STORAGE_DIR}/${ctx.state.user.id}/full/${body.id}.png`).value;
+    photo.moveAndSize(file);
+    // TODO - resize images
+  }catch(err){
+    ctx.status = 500;
+    ctx.body = err;
+    return;
   }
 
-  // END transaction
+  if (portfolio_id) {
+    const pivot_db = require('../../lib/db')('portfolios_photos');
+    pivot_db.insert({ portfolio_id, photo_id: photo.id });
+  }
 
   ctx.status = 200;
-  ctx.body = body;
+  ctx.body = photo;
 };
 
 exports.update = async (ctx) => {
@@ -98,7 +95,28 @@ exports.update = async (ctx) => {
   }
 
   db_util.clean(photo);
-  photo = Photo.update(id, photo);
+  if(!photo){
+    ctx.status = 400;
+    return;
+  }
+  photo = await Photo.update(id, photo);
   ctx.status = 200;
   ctx.body = photo;
+};
+
+exports.del = async (ctx) => {
+  const id = ctx.checkParams('id')
+    .toInt().value;
+
+  if (ctx.errors) {
+    ctx.status = 400;
+    ctx.body = ctx.errors;
+    return;
+  }
+
+  const ret = await Photo.remove(id);
+  if(ret != 1){
+    return
+  }
+  ctx.status = 204;
 };
