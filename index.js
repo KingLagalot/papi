@@ -12,18 +12,6 @@ async function bootstrap() {
    * await sequelize.authenticate()
    */
 
-  try {
-    await db.select(db.raw('1'));
-  } catch (err) {
-    process.exitCode = 1;
-  } finally {
-    if (server) {
-      await server.stop();
-    }
-    await db.destroy();
-
-    setTimeout(() => process.exit(), 10000).unref();
-  }
   return http.createServer(server.callback()).listen(port);
 }
 
