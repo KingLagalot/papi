@@ -1,6 +1,6 @@
 module.exports = {
-    recursive: true,
-    color: true,
+  recursive: true,
+  color: true,
   diff: true,
   extension: ['js'],
   package: './package.json',
@@ -8,7 +8,5 @@ module.exports = {
   slow: 75,
   timeout: 2000,
   ui: 'bdd',
-  file: [
-      './test/setup/db.setup.js'
-  ]
-}
+  file: ['./test/setup/db.setup.js'],
+};

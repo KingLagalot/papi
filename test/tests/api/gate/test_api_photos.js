@@ -1,4 +1,3 @@
-
 const request = require('supertest');
 const fs = require('fs');
 const app = require('../../../../server');
@@ -9,7 +8,7 @@ const photo_factory = require('../../../factories/photo.factory');
 
 require('should');
 
-describe('API /gate/photos', function () {
+describe('API /gate/photos', function() {
   var server;
   var user;
   var token;
@@ -18,59 +17,56 @@ describe('API /gate/photos', function () {
   this.beforeEach(async () => {
     server = app.listen();
     user = await user_factory.default(true, {}, ['password']);
-    token = jwt_factory.default(user.id);
-    photo = await photo_factory.default(true, {author_id: user.id});
+    token = await jwt_factory.default(user.id);
+    photo = await photo_factory.default(true, { author_id: user.id });
   });
-  afterEach(function() {
-    // Need to close server else mocha will hang open
+  afterEach(async function() {
     server.close();
   });
 
-  it('get /{id}', function(done) {
+  it('get /{id}', async function() {
     request(server)
       .get(`${route}/${photo.id}`)
-      .set({'Token': token})
-      .expect(200, done)
+      .set({ Token: token })
+      .expect(200);
   });
-  it('get / - photo not exist', function(done) {
+  it('get / - photo not exist', async function() {
     request(server)
       .get(`${route}/00000000-0000-0000-0000-000000000000`)
-      .set({'Token': token})
-      .expect(404,done);
+      .set({ Token: token })
+      .expect(404);
   });
 
-  it('index /', function(done) {
+  it('index /', async function() {
     request(server)
       .get(`${route}`)
-      .set({'Token': token})
-      .expect(200, done)
+      .set({ Token: token })
+      .expect(200);
   });
-  it('update /{id}', function(done) {
+  it('update /{id}', async function() {
     request(server)
       .put(`${route}/${photo.id}`)
-      .set({'Token': token})
-      .send({'title': 'Updated Title'})
-      .expect(200, done)
+      .set({ Token: token })
+      .send({ title: 'Updated Title' })
+      .expect(200);
   });
   it('create /', async function() {
-    var _photo = await photo_factory.default(false);
     var test = await photo_factory.createImageFile(__dirname);
 
     await request(server)
       .post(`${route}`)
-      .attach('file', `${__dirname}/test.png`)
-      .set({'Token': token})
+      .attach('file', `${__dirname}/test.jpg`)
+      .set({ Token: token })
       .field('title', 'New Photo')
       .field('description', 'test')
-      .expect(200)
-      .then(() => {
-        fs.unlinkSync(`${__dirname}/test.png`)
-      })
+      .expect(200);
+    fs.unlinkSync(`${__dirname}/test.jpg`);
+    return;
   });
-  it('delete /{id}', function(done) {
+  it('delete /{id}', async function() {
     request(server)
       .del(`${route}/${photo.id}`)
-      .set({'Token': token})
-      .expect(204, done)
+      .set({ Token: token })
+      .expect(204);
   });
 });

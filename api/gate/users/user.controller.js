@@ -1,11 +1,9 @@
-
 const db_util = require('../../../utils/db.util');
 const db = require('../../../lib/db')('users');
 const User = require('../../../lib/models/user.model');
 
-exports.get = async (ctx) => {
-  const user_id = ctx.checkParams('id')
-    .isUUID().value;
+exports.get = async ctx => {
+  const user_id = ctx.checkParams('id').isUUID().value;
 
   if (ctx.errors) {
     ctx.status = 400;
@@ -19,7 +17,7 @@ exports.get = async (ctx) => {
   ctx.body = user;
 };
 
-exports.index = async (ctx) => {
+exports.index = async ctx => {
   const query = db.select();
   users = await db_util.paginate(query, ctx);
 
@@ -33,13 +31,13 @@ exports.index = async (ctx) => {
   ctx.body = users;
 };
 
-exports.create = async (ctx) => {
-  const id = ctx.checkBody('id')
-    .isUUID().value;
+exports.create = async ctx => {
+  const id = ctx.checkBody('id').isUUID().value;
   const body = _user;
   body.first_name = ctx.checkBody('first_name').optional();
   body.last_name = ctx.checkBody('last_name').optional();
-  body.email = ctx.checkBody('email')
+  body.email = ctx
+    .checkBody('email')
     .optional()
     .isEmail();
 
@@ -55,13 +53,13 @@ exports.create = async (ctx) => {
   ctx.body = user;
 };
 
-exports.update = async (ctx) => {
-  const id = ctx.checkBody('id')
-    .isUUID().value;
+exports.update = async ctx => {
+  const id = ctx.checkBody('id').isUUID().value;
   const body = _user;
   body.first_name = ctx.checkBody('first_name').optional();
   body.last_name = ctx.checkBody('last_name').optional();
-  body.email = ctx.checkBody('email')
+  body.email = ctx
+    .checkBody('email')
     .optional()
     .isEmail();
 
@@ -77,9 +75,8 @@ exports.update = async (ctx) => {
   ctx.body = user;
 };
 
-exports.del = async (ctx) => {
-  const id = ctx.checkParams('id')
-    .isUUID().value;
+exports.del = async ctx => {
+  const id = ctx.checkParams('id').isUUID().value;
 
   if (ctx.errors) {
     ctx.status = 400;
@@ -88,8 +85,8 @@ exports.del = async (ctx) => {
   }
 
   const ret = await User.remove(id);
-  if(ret != 1){
-    return
+  if (ret != 1) {
+    return;
   }
   ctx.status = 204;
 };

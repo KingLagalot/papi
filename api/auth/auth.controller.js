@@ -1,13 +1,11 @@
-
 const passport = require('koa-passport');
 const User = require('../../lib/models/user.model');
 var jwt = require('jwt-simple');
 
-exports.register = async (ctx) => {
+exports.register = async ctx => {
   const username = ctx.checkBody('username').value;
   const email = ctx.checkBody('email').value;
   const password = ctx.checkBody('password').value;
-
 
   if (ctx.errors) {
     ctx.status = 400;
@@ -28,7 +26,7 @@ exports.register = async (ctx) => {
   }
 };
 
-exports.login = async (ctx) => {
+exports.login = async ctx => {
   ctx.checkBody('username');
   ctx.checkBody('password');
 
@@ -44,8 +42,14 @@ exports.login = async (ctx) => {
         ctx.login(user);
         ctx.status = 200;
         // 4 hours til expiration
-        const token = jwt.encode({user_id: user.id, exp: Math.round(new Date().getTime() / 1000) + (3600 * 4)}, process.env.SECRET)
-        ctx.body = {token: token};
+        const token = jwt.encode(
+          {
+            user_id: user.id,
+            exp: Math.round(new Date().getTime() / 1000) + 3600 * 4,
+          },
+          process.env.SECRET,
+        );
+        ctx.body = { token: token };
         resolve();
       } else {
         ctx.status = 400;
@@ -56,7 +60,7 @@ exports.login = async (ctx) => {
   });
 };
 
-exports.logout = async (ctx) => {
+exports.logout = async ctx => {
   if (ctx.isAuthenticated()) {
     ctx.logout();
     ctx.status = 204;

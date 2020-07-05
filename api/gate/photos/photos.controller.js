@@ -1,10 +1,8 @@
-
 const db_util = require('../../../utils/db.util');
 const Photo = require('../../../lib/models/photo.model');
 
-exports.get = async (ctx) => {
-  const photo_id = ctx.checkParams('id')
-    .isUUID().value;
+exports.get = async ctx => {
+  const photo_id = ctx.checkParams('id').isUUID().value;
 
   if (ctx.errors) {
     ctx.status = 400;
@@ -13,14 +11,14 @@ exports.get = async (ctx) => {
   }
 
   const photo = await Photo.get({ id: photo_id, author_id: ctx.state.user.id });
-  if(!photo){
-    return
+  if (!photo) {
+    return;
   }
   ctx.status = 200;
   ctx.body = photo;
 };
 
-exports.index = async (ctx) => {
+exports.index = async ctx => {
   const query = ctx.state.user.getPhotosQuery();
 
   const body = await db_util.paginate(query, ctx);
@@ -34,8 +32,9 @@ exports.index = async (ctx) => {
   ctx.body = body;
 };
 
-exports.create = async (ctx) => {
-  const portfolio_id = ctx.checkBody('portfolio_id')
+exports.create = async ctx => {
+  const portfolio_id = ctx
+    .checkBody('portfolio_id')
     .optional()
     .isUUID().value;
 
@@ -44,6 +43,9 @@ exports.create = async (ctx) => {
   photo_obj.title = ctx.checkBody('title').value;
   photo_obj.description = ctx.checkBody('description').optional().value;
 
+  var file;
+  file = ctx.checkFile('file').value;
+
   if (ctx.errors) {
     ctx.status = 400;
     ctx.body = ctx.errors;
@@ -51,14 +53,11 @@ exports.create = async (ctx) => {
   }
   const photo = await Photo.create(photo_obj);
 
-
-  var file;
-  try{
-    file = ctx.checkFile('file').value;
-      //.move(`${process.env.STORAGE_DIR}/${ctx.state.user.id}/full/${body.id}.png`).value;
+  try {
+    //.move(`${process.env.STORAGE_DIR}/${ctx.state.user.id}/full/${body.id}.png`).value;
     photo.moveAndSize(file);
     // TODO - resize images
-  }catch(err){
+  } catch (err) {
     ctx.status = 500;
     ctx.body = err;
     return;
@@ -73,9 +72,8 @@ exports.create = async (ctx) => {
   ctx.body = photo;
 };
 
-exports.update = async (ctx) => {
-  const id = ctx.checkParams('id')
-    .isUUID().value;
+exports.update = async ctx => {
+  const id = ctx.checkParams('id').isUUID().value;
   var photo = {};
   photo.title = ctx.checkBody('title').value;
   photo.description = ctx.checkBody('description').optional().value;
@@ -87,7 +85,7 @@ exports.update = async (ctx) => {
   }
 
   db_util.clean(photo);
-  if(!photo){
+  if (!photo) {
     ctx.status = 400;
     return;
   }
@@ -96,9 +94,8 @@ exports.update = async (ctx) => {
   ctx.body = photo;
 };
 
-exports.del = async (ctx) => {
-  const id = ctx.checkParams('id')
-    .isUUID().value;
+exports.del = async ctx => {
+  const id = ctx.checkParams('id').isUUID().value;
 
   if (ctx.errors) {
     ctx.status = 400;
@@ -107,8 +104,8 @@ exports.del = async (ctx) => {
   }
 
   const ret = await Photo.remove(id);
-  if(ret != 1){
-    return
+  if (ret != 1) {
+    return;
   }
   ctx.status = 204;
 };

@@ -1,8 +1,7 @@
-
 const http = require('http');
 const server = require('./server');
 const db = require('./lib/db');
-require('dotenv').config()
+require('dotenv').config();
 
 const { port } = require('./config').server;
 
@@ -29,8 +28,10 @@ async function bootstrap() {
 }
 
 bootstrap()
-  .then((server) => console.log(`🚀 Server listening on port ${server.address().port}!`))
-  .catch((err) => {
+  .then(server =>
+    console.log(`🚀 Server listening on port ${server.address().port}!`),
+  )
+  .catch(err => {
     setImmediate(() => {
       console.error('Unable to run the server because of the following error:');
       console.error(err);

@@ -1,7 +1,6 @@
-
 const controller = require('./portfolio.controller');
 
-module.exports = (Router) => {
+module.exports = Router => {
   const router = new Router({
     prefix: '/portfolios',
   });

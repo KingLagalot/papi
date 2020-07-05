@@ -18,18 +18,18 @@ exports.default = async (store_in_db, fields) => {
   }
   if (store_in_db) {
     ret = Photo.create(ret);
-  }else {
+  } else {
     ret = Photo.fromObject(ret);
   }
   return ret;
 };
 
-exports.createImageFile = async (dir) => {
+exports.createImageFile = async dir => {
   return await Jimp.read({
-    url: 'https://picsum.photos/2048/2048', // Required!
+    url: 'https://picsum.photos/2048/2048',
   })
     .then(image => {
-      var temp = image.write(`${dir}/`, (err, val) => {
+      var temp = image.write(`${dir}/test.jpg`, (err, val) => {
         return val;
       });
       return temp;
@@ -37,4 +37,4 @@ exports.createImageFile = async (dir) => {
     .catch(err => {
       console.error(err);
     });
-}
+};

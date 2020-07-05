@@ -1,4 +1,3 @@
-
 const ON_UPDATE_TIMESTAMP_FUNCTION = `
     CREATE OR REPLACE FUNCTION on_update_timestamp()
     RETURNS trigger AS $$
@@ -11,5 +10,5 @@ const ON_UPDATE_TIMESTAMP_FUNCTION = `
 
 const DROP_ON_UPDATE_TIMESTAMP_FUNCTION = 'DROP FUNCTION on_update_timestamp';
 
-exports.up = (knex) => knex.raw(ON_UPDATE_TIMESTAMP_FUNCTION);
-exports.down = (knex) => knex.raw(DROP_ON_UPDATE_TIMESTAMP_FUNCTION);
+exports.up = knex => knex.raw(ON_UPDATE_TIMESTAMP_FUNCTION);
+exports.down = knex => knex.raw(DROP_ON_UPDATE_TIMESTAMP_FUNCTION);

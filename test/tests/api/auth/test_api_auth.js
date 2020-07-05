@@ -1,4 +1,3 @@
-
 const request = require('supertest');
 const assert = require('assert');
 const app = require('../../../../server');
@@ -7,7 +6,7 @@ const user_factory = require('../../../factories/user.factory');
 
 require('should');
 
-describe('API /auth', function () {
+describe('API /auth', function() {
   let server;
 
   // Setup and teardown functions

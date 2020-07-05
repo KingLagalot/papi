@@ -1,6 +1,10 @@
-exports.up = (knex) => {
-  return knex.schema.createTable('users', (t) => {
-    t.uuid('id').unique().notNullable().primary().defaultTo(knex.raw('gen_random_uuid()'));
+exports.up = knex => {
+  return knex.schema.createTable('users', t => {
+    t.uuid('id')
+      .unique()
+      .notNullable()
+      .primary()
+      .defaultTo(knex.raw('gen_random_uuid()'));
     t.dateTime('created_at').nullable();
     t.dateTime('updated_at').nullable();
     t.dateTime('deleted_at').nullable();
@@ -21,6 +25,6 @@ exports.up = (knex) => {
   });
 };
 
-exports.down = (knex) => {
+exports.down = knex => {
   return knex.schema.dropTable('users');
 };

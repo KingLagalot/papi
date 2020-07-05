@@ -17,7 +17,7 @@ exports.default = async (store_in_db, fields) => {
   }
   if (store_in_db) {
     ret = await Portfolio.create(ret);
-  }else {
+  } else {
     ret = Portfolio.fromObject(ret);
   }
   return ret;

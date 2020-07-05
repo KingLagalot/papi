@@ -6,12 +6,16 @@ const knex = require('../../lib/db');
 /**
  * Sets up test database, runs asll migrations up.
  */
-before((done) => {
-  knex().migrate.latest().then(() => done());
+before(done => {
+  knex()
+    .migrate.latest()
+    .then(() => done());
 });
 /**
  * Shuts down test database, runs all migrations down.
  */
-after((done) => {
-  knex().migrate.rollback().then(() => done());
+after(done => {
+  knex()
+    .migrate.rollback()
+    .then(() => done());
 });

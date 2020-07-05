@@ -1,10 +1,7 @@
-
 const db = require('../../../lib/db')('photos');
 
-exports.get = async (ctx) => {
-  const photo_id = ctx
-    .checkParams('id')
-    .isUUID().value;
+exports.get = async ctx => {
+  const photo_id = ctx.checkParams('id').isUUID().value;
 
   if (ctx.errors) {
     ctx.status = 400;
