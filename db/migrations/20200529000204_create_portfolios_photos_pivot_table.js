@@ -1,10 +1,8 @@
 exports.up = function (knex) {
   return knex.schema.createTable('portfolios_images', (t) => {
-    t.integer('portfolio_id')
-      .unsigned()
+    t.uuid('portfolio_id')
       .notNull();
-    t.integer('photo_id')
-      .unsigned()
+    t.uuid('photo_id')
       .notNull();
   });
 };

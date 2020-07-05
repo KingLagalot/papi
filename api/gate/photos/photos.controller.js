@@ -4,7 +4,7 @@ const Photo = require('../../../lib/models/photo.model');
 
 exports.get = async (ctx) => {
   const photo_id = ctx.checkParams('id')
-    .toInt().value;
+    .isUUID().value;
 
   if (ctx.errors) {
     ctx.status = 400;
@@ -37,7 +37,7 @@ exports.index = async (ctx) => {
 exports.create = async (ctx) => {
   const portfolio_id = ctx.checkBody('portfolio_id')
     .optional()
-    .toInt().value;
+    .isUUID().value;
 
   var photo_obj = {};
   photo_obj.author_id = ctx.state.user.id;
@@ -75,18 +75,10 @@ exports.create = async (ctx) => {
 
 exports.update = async (ctx) => {
   const id = ctx.checkParams('id')
-    .toInt().value;
+    .isUUID().value;
   var photo = {};
   photo.title = ctx.checkBody('title').value;
   photo.description = ctx.checkBody('description').optional().value;
-  photo.copyright = ctx.checkBody('copyright').optional().value;
-  photo.focal_length = ctx.checkBody('focal_length')
-    .optional()
-    .toInt().value;
-  photo.iso = ctx.checkBody('iso')
-    .optional()
-    .toInt().value;
-  photo.lens = ctx.checkBody('lens').optional().value;
 
   if (ctx.errors) {
     ctx.status = 400;
@@ -106,7 +98,7 @@ exports.update = async (ctx) => {
 
 exports.del = async (ctx) => {
   const id = ctx.checkParams('id')
-    .toInt().value;
+    .isUUID().value;
 
   if (ctx.errors) {
     ctx.status = 400;

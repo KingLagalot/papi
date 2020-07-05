@@ -5,7 +5,7 @@ const Portfolio = require('../../../lib/models/portfolio.model');
 
 exports.get = async (ctx) => {
   const portfolio_id = ctx.checkParams('id')
-    .toInt().value;
+    .isUUID().value;
 
   if (ctx.errors) {
     ctx.status = 400;
@@ -38,7 +38,7 @@ exports.index = async (ctx) => {
 
 exports.update = async (ctx) => {
   const id = ctx.checkQuery('id')
-    .toInt().value;
+    .isUUID().value;
   const body = {};
   body.title = ctx.checkBody('title').optional().value;
   body.description = ctx.checkBody('description').optional().value;
@@ -74,7 +74,7 @@ exports.addPhotos = async (ctx) => {
     ctx.addError('photos must be an array of ids');
   }
   const portfolio_id = ctx.checkQuery('id')
-    .toInt().value;
+    .isUUID().value;
   if (ctx.errors) {
     ctx.status = 400;
     ctx.body = ctx.errors;
@@ -90,7 +90,7 @@ exports.addPhotos = async (ctx) => {
 
 exports.del = async (ctx) => {
   const id = ctx.checkParams('id')
-    .toInt().value;
+    .isUUID().value;
 
   if (ctx.errors) {
     ctx.status = 400;

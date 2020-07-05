@@ -1,8 +1,6 @@
 exports.up = function (knex) {
   return knex.schema.createTable('portfolios', (t) => {
-    t.increments('id')
-      .unsigned()
-      .primary();
+    t.uuid('id').unique().notNullable().primary().defaultTo(knex.raw('gen_random_uuid()'));
     t.dateTime('created_at').nullable();
     t.dateTime('updated_at').nullable();
     t.dateTime('deleted_at').nullable();
@@ -10,7 +8,7 @@ exports.up = function (knex) {
     t.string('title').notNull();
     t.text('description').nullable();
 
-    t.integer('author_id')
+    t.uuid('author_id')
       .unsigned()
       .notNullable();
     t.boolean('public')

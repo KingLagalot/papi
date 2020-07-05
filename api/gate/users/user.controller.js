@@ -5,7 +5,7 @@ const User = require('../../../lib/models/user.model');
 
 exports.get = async (ctx) => {
   const user_id = ctx.checkParams('id')
-    .toInt().value;
+    .isUUID().value;
 
   if (ctx.errors) {
     ctx.status = 400;
@@ -34,7 +34,8 @@ exports.index = async (ctx) => {
 };
 
 exports.create = async (ctx) => {
-  const id = ctx.checkBody('id').isInt();
+  const id = ctx.checkBody('id')
+    .isUUID().value;
   const body = _user;
   body.first_name = ctx.checkBody('first_name').optional();
   body.last_name = ctx.checkBody('last_name').optional();
@@ -55,7 +56,8 @@ exports.create = async (ctx) => {
 };
 
 exports.update = async (ctx) => {
-  const id = ctx.checkBody('id').isInt();
+  const id = ctx.checkBody('id')
+    .isUUID().value;
   const body = _user;
   body.first_name = ctx.checkBody('first_name').optional();
   body.last_name = ctx.checkBody('last_name').optional();
@@ -77,7 +79,7 @@ exports.update = async (ctx) => {
 
 exports.del = async (ctx) => {
   const id = ctx.checkParams('id')
-    .toInt().value;
+    .isUUID().value;
 
   if (ctx.errors) {
     ctx.status = 400;

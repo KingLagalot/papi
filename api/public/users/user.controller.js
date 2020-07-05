@@ -3,7 +3,8 @@ const db_util = require('../../../utils/db.util');
 const User = require('../../../lib/models/user.model');
 
 exports.get = async (ctx) => {
-  const user_id = ctx.checkParams('id').toInt().value;
+  const user_id = ctx.checkParams('id')
+    .isUUID().value;
 
   if (ctx.errors) {
     ctx.status = 400;
@@ -19,7 +20,8 @@ exports.get = async (ctx) => {
 
 exports.photos = async (ctx) => {
   // Check for params
-  const user_id = ctx.checkParams('id').toInt().value;
+  const user_id = ctx.checkParams('id')
+    .isUUID().value;
 
   const user = await User.get({ id: user_id });
   ctx.assert(user, 404, 'The requested user does not exist');
@@ -39,7 +41,8 @@ exports.photos = async (ctx) => {
 
 exports.portfolios = async (ctx) => {
   // Check for params
-  const user_id = ctx.checkParams('id').toInt().value;
+  const user_id = ctx.checkParams('id')
+    .isUUID().value;
 
   const user = await User.get({ id: user_id });
   ctx.assert(user, 404, 'The requested user does not exist');

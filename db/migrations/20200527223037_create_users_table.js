@@ -1,8 +1,6 @@
 exports.up = (knex) => {
   return knex.schema.createTable('users', (t) => {
-    t.increments('id')
-      .unsigned()
-      .primary();
+    t.uuid('id').unique().notNullable().primary().defaultTo(knex.raw('gen_random_uuid()'));
     t.dateTime('created_at').nullable();
     t.dateTime('updated_at').nullable();
     t.dateTime('deleted_at').nullable();
