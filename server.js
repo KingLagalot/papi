@@ -45,6 +45,8 @@ server.use(
   }),
 );
 
+server.use(require('koa-static')(`${process.env.STORAGE_DIR}`))
+
 const db = new Map();
 server.use(
   ratelimit({
