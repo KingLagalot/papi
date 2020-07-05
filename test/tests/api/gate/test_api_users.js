@@ -35,7 +35,7 @@ describe('API /gate/users', function () {
   });
   it('get / - wrong id', function(done) {
     request(server)
-      .get(`${route}/${user.id+20}`)
+      .get(`${route}/00000000-0000-0000-0000-000000000000`)
       .set({'Token': token})
       .expect(404, done);
   });

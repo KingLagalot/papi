@@ -35,7 +35,7 @@ describe('API /gate/portfolios', function () {
   });
   it('get - wrong id', function(done) {
     request(server)
-      .get(`${route}/${portfolio.id + 1}`)
+      .get(`${route}/00000000-0000-0000-0000-000000000000`)
       .set({'Token': token})
       .expect(404, done);
   });

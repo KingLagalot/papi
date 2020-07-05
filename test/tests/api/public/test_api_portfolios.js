@@ -27,7 +27,7 @@ describe('API /public/portfolios', function () {
   });
   it('get /:id - wrong id', function(done) {
     request(server)
-      .get(`${route}/${id}`)
+      .get(`${route}/00000000-0000-0000-0000-000000000000`)
       .expect(404, done);
   });
   it('get /:id - not public', function(done) {

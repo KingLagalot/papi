@@ -35,7 +35,7 @@ describe('API /public/photos', function () {
   });
   it('get /:id - photo not exist', function(done) {
     request(server)
-      .get(`${route}/${id + 1}`)
+      .get(`${route}/00000000-0000-0000-0000-000000000000`)
       .expect(404, done);
   });
   it('get /:id - photo is private', function(done) {

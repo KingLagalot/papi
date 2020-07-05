@@ -34,7 +34,7 @@ describe('API /gate/photos', function () {
   });
   it('get / - photo not exist', function(done) {
     request(server)
-      .get(`${route}/${photo.id +1}`)
+      .get(`${route}/00000000-0000-0000-0000-000000000000`)
       .set({'Token': token})
       .expect(404,done);
   });

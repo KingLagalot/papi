@@ -33,23 +33,11 @@ describe('API /public/users', function() {
         done();
       });
   });
-  // Gets user by id
-  it('get /:id', function(done) {
-    request(server)
-      .get(`${route}/${user.id}`)
-      .expect(200)
-      .expect('Content-Type', /json/)
-      .then((response) => {
-        assert(response.body.id, user.id);
-        assert(!response.body.password);
-        done();
-      });
-  });
 
   // Gets user that doesn't exist
   it('get /:id - wrong id', function(done) {
     request(server)
-      .get(`${route}/${user.id + 1}`)
+      .get(`${route}/00000000-0000-0000-0000-000000000000`)
       .expect(404, done);
   });
 
