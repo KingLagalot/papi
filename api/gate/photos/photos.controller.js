@@ -45,6 +45,9 @@ exports.create = async ctx => {
 
   var file;
   file = ctx.checkFile('file').value;
+  if(file != null && file.type != 'image/jpeg'){
+    ctx.checkFile('file').addError('Filetype must be jpeg');
+  }
 
   if (ctx.errors) {
     ctx.status = 400;
@@ -54,9 +57,7 @@ exports.create = async ctx => {
   const photo = await Photo.create(photo_obj);
 
   try {
-    //.move(`${process.env.STORAGE_DIR}/${ctx.state.user.id}/full/${body.id}.png`).value;
-    photo.moveAndSize(file);
-    // TODO - resize images
+    await photo.moveAndSize(file);
   } catch (err) {
     ctx.status = 500;
     ctx.body = err;

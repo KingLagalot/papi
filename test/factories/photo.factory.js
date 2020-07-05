@@ -25,16 +25,12 @@ exports.default = async (store_in_db, fields) => {
 };
 
 exports.createImageFile = async dir => {
-  return await Jimp.read({
-    url: 'https://picsum.photos/2048/2048',
-  })
-    .then(image => {
-      var temp = image.write(`${dir}/test.jpg`, (err, val) => {
-        return val;
-      });
-      return temp;
+  return await new Promise((accept) => {
+    Jimp.read({
+      url: 'https://picsum.photos/2048/2048',
+    }).then((r) => {
+      var d = r.write(`${dir}/test.jpg`);
+      accept(d);
     })
-    .catch(err => {
-      console.error(err);
-    });
+  });
 };

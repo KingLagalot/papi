@@ -3,9 +3,9 @@ const User = require('../../lib/models/user.model');
 var jwt = require('jwt-simple');
 
 exports.register = async ctx => {
-  const username = ctx.checkBody('username').value;
-  const email = ctx.checkBody('email').value;
-  const password = ctx.checkBody('password').value;
+  const username = ctx.checkBody('username').exist().value;
+  const email = ctx.checkBody('email').isEmail().value;
+  const password = ctx.checkBody('password').exist().value;
 
   if (ctx.errors) {
     ctx.status = 400;
@@ -27,8 +27,8 @@ exports.register = async ctx => {
 };
 
 exports.login = async ctx => {
-  ctx.checkBody('username');
-  ctx.checkBody('password');
+  ctx.checkBody('username').exist();
+  ctx.checkBody('password').exist();
 
   if (ctx.errors) {
     ctx.status = 400;
