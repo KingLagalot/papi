@@ -1,9 +1,15 @@
 # pAPI
 
-Photo API designed for self hosting photography portfolios, giving the ability for custom websites without the hassel of a complicated backend.
+Photography portfolio API with support for multiple users. Build a custom frontend for your portfolio and utilize the automatic resizing and photo management of pAPI to populate your pages.
 
+## Docker
+[Available Here](https://hub.docker.com/r/naheitsch/papi)
 
-# Testing
+## API
+
+TODO
+
+## Testing
 
 PostgreSQL is required for testing; below will run PostgreSQL instance in a docker container.
 
